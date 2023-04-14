@@ -7,11 +7,11 @@ Please fill out all of the following sections to help us grade your submission:
 
 ## Student (to be completed individually)
 
-* First Last, x500@umn.edu
+* Anwaar Hadi, hadi0013@umn.edu
 
 ## Link to Site
 
-<https://TODO.com/>
+https://brilliant-rabanadas-b5094e.netlify.app
 
 ## Challenge Task
 
