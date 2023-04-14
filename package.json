@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.16.1",
     "bulma": "^0.9.4",
     "codehooks-crudlify": "^1.0.8",
     "codehooks-js": "^1.0.11",
