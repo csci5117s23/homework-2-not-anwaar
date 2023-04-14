@@ -30,6 +30,11 @@ const userAuth = async (req, res, next) => {
 }
 app.use(userAuth)
 
+app.use((req, res, next) => { //middleware to get around CORS
+  res.set({"Access-Control-Allow-Origin": "*"})
+  next()
+})
+
 app.use('/todo/:id', async (req, res, next) => {
   const id = req.params.ID;
   const userId = req.user_token.sub
