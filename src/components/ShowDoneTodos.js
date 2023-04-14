@@ -49,7 +49,7 @@ export default function ShowDoneTodos() {
     if (loading) { return <span>Loading Todos...</span> }
     else {
         const todoListItems = todos.map((todo) => (
-            <div className="card is-info todo-item">
+            <div className="card is-info todo-item done-todo-item">
                 <div className="card-content">
                     <div className="content todo-main-content">
                         {todo.content}

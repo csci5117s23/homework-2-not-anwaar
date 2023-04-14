@@ -24,3 +24,7 @@ body {
 button {
   margin-top: 1em;
 }
+
+.done-todo-item {
+  border: 2px solid lightgreen;
+}
