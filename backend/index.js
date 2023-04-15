@@ -11,6 +11,7 @@ import jwtDecode from 'jwt-decode'
 const TodoYup = object({
   content: string().required(),
   done: boolean().required(),
+  userId: string().required(),
   createdOn: date().required()
 })
 
@@ -33,6 +34,16 @@ app.use(userAuth)
 app.use((req, res, next) => { //middleware to get around CORS
   res.set({"Access-Control-Allow-Origin": "*"})
   next()
+})
+
+
+app.use((req, res, next) => {
+  if (req.method === "POST") {
+      req.body.userId = req.user_token.sub
+  } else if (req.method === "GET") {
+      req.query.userId = req.user_token.sub
+  }
+  next();
 })
 
 app.use('/todo/:id', async (req, res, next) => {
