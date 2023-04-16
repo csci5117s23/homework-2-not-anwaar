@@ -7,7 +7,8 @@ import {
     getTodo, 
     getDoneTodos, 
     getUndoneTodos,
-    getCategories
+    getCategories,
+    deleteCategory
 } from "@/modules/db"
 import { useAuth } from "@clerk/nextjs";
 import React, { useState, useEffect } from "react";
