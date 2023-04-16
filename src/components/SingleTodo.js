@@ -44,7 +44,7 @@ export default function SingleTodo({ id }) {
     }
 
     async function toggle(todo) {
-        const token = await getToken()
+        const token = await getToken({template: 'codehooks'})
         try {
             await toggleTodoStatus(token, todo)
         } catch(e) { console.log(e) }

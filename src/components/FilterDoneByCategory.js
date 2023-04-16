@@ -6,15 +6,17 @@ import {
     updateTodoContent, 
     getTodo, 
     getDoneTodos, 
-    getUndoneTodos
+    getUndoneTodos,
+    getDoneTodosByCategory,
+    getUndoneTodosByCategory,
+    getCategories
 } from "@/modules/db"
 import { useAuth } from "@clerk/nextjs";
 import React, { useState, useEffect } from "react";
 import 'bulma/css/bulma.min.css';
 import Link from 'next/link';
 
-
-export default function ShowDoneTodos() {
+export default function FilterDoneByCategory({ category }) {
     const [loading, setLoading]= useState(true)
     const [todos, setTodos] = useState([])
     const { isLoaded, userId, sessionId, getToken } = useAuth()
@@ -23,7 +25,7 @@ export default function ShowDoneTodos() {
         async function process() {
             if (userId) {
                 const token = await getToken({ template: 'codehooks' })
-                setTodos(await getDoneTodos(token))
+                setTodos(await getDoneTodosByCategory(token, category))
                 setLoading(false)
             }
         }
@@ -35,7 +37,7 @@ export default function ShowDoneTodos() {
         try { 
             await deleteTodo(token, todo) 
         } catch(e) { console.log(e) }
-        setTodos(await getDoneTodos(token))
+        setTodos(await getDoneTodosByCategory(token, category))
     }
 
     async function toggle(todo) {
@@ -43,7 +45,7 @@ export default function ShowDoneTodos() {
         try {
             await toggleTodoStatus(token, todo)
         } catch(e) { console.log(e) }
-        setTodos(await getDoneTodos(token))
+        setTodos(await getDoneTodosByCategory(token, category))
     }
 
     if (loading) { return <span>Loading Todos...</span> }
@@ -63,7 +65,7 @@ export default function ShowDoneTodos() {
                     </button>
                     <button
                      className="card-footer-item button is-warning is-light is-small is-responsive"
-                     onClick={() => toggle(todo)}> Mark as not done</button>
+                     onClick={() => toggle(todo)}>Mark as Done</button>
                     <Link /** fake button, for the aesthetic */
                      className="card-footer-item button is-info is-light is-small is-responsive" 
                      href={"/todo/"+todo._id}>More Info</Link>

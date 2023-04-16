@@ -8,17 +8,17 @@ export async function getTodos(authToken) {
     let todos = await result.json()
     todos = todos.sort((a, b) => 
         a.createdOn < b.createdOn ? 1 : (a.createdOn > b.createdOn ? -1 : 0))
-    return await result.json()
+    return todos
 }
 
-export async function addTodo(authToken, content) {
+export async function addTodo(authToken, content, category="") {
     const result = await fetch(backend_base+"/todo", {
         "method": "POST",
         'headers': 
         {'Authorization': 'Bearer ' + authToken,
          'Content-Type': 'application/json'
         },
-        "body": JSON.stringify({content: content, done: false, createdOn: new Date()})
+        "body": JSON.stringify({content: content, done: false, category: category, createdOn: new Date()})
     })
     const ret = await result.json()
     console.log(ret)
@@ -100,3 +100,79 @@ export async function getUndoneTodos(authToken) {
     return null
 }
 
+export async function getDoneTodosByCategory(authToken, category) {
+    const result = await fetch(backend_base+"/todo", {
+        'method': 'GET',
+        'headers': {'Authorization': 'Bearer ' + authToken}
+    })
+    if (result.ok) {
+        const items = await result.json()
+        console.log(items)
+        let done_items = items.filter((item) => item.done && item.category == category)
+        done_items = done_items.sort((a, b) => 
+            a.createdOn < b.createdOn ? 1 : (a.createdOn > b.createdOn ? -1 : 0)
+        )
+        return done_items
+    }
+    return null
+}
+
+export async function getUndoneTodosByCategory(authToken, category) {
+    const result = await fetch(backend_base+"/todo", {
+        'method': 'GET',
+        'headers': {'Authorization': 'Bearer ' + authToken}
+    })
+    if (result.ok) {
+        const items = await result.json()
+        console.log(items)
+        let undone_items = items.filter((item) => !item.done && item.category == category)
+        undone_items = undone_items.sort((a, b) => 
+            a.createdOn < b.createdOn ? 1 : (a.createdOn > b.createdOn ? -1 : 0)
+        )
+        console.log(undone_items)
+        return undone_items
+    }
+    return null
+}
+
+export async function getCategories(authToken) {
+    const result = await fetch(backend_base+"/categories", {
+        'method':'GET',
+        'headers': {'Authorization': 'Bearer ' + authToken}
+    })
+    let categories = await result.json()
+    return categories
+}
+
+export async function getCategoryNames(authToken) {
+    const result = await fetch(backend_base+"/categories", {
+        'method':'GET',
+        'headers': {'Authorization': 'Bearer ' + authToken}
+    })
+    let categories = await result.json()
+    let categoryNames = categories.map((category) => category.name)
+    categoryNames = [...new Set(categoryNames)]
+    return categoryNames
+}
+
+export async function addCategory(authToken, category) {
+    const result = await fetch(backend_base+"/categories", {
+        "method": "POST",
+        'headers': 
+        {'Authorization': 'Bearer ' + authToken,
+         'Content-Type': 'application/json'
+        },
+        "body": JSON.stringify({name: category})
+    })
+    const ret = await result.json()
+    console.log(ret)
+    return ret
+}
+
+export async function deleteCategory(authToken, category) {
+    const result = await fetch(backend_base+"/categories/"+category._id,{
+        'method':'DELETE',
+        'headers': {'Authorization': 'Bearer ' + authToken},
+    })
+    return await result.json();
+}

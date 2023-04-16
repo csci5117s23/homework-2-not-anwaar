@@ -6,7 +6,12 @@ import {
     updateTodoContent, 
     getTodo, 
     getDoneTodos, 
-    getUndoneTodos
+    getUndoneTodos,
+    getDoneTodosByCategory,
+    getUndoneTodosByCategory,
+    getCategories,
+    addCategory,
+    deleteCategory
 } from "@/modules/db"
 import { useAuth } from "@clerk/nextjs";
 import React, { useState, useEffect } from "react";
@@ -19,11 +24,15 @@ export default function TodoEditor() {
     const { isLoaded, userId, sessionId, getToken } = useAuth()
     const [newContent, setNewContent] = useState("")
 
+    const [categories, setCategories] = useState([])
+    const [newCategoryName, setNewCategoryName] = useState("")
+
     useEffect(() => {
         async function process() {
             if (userId) {
                 const token = await getToken({ template: 'codehooks' })
                 setTodos(await getUndoneTodos(token))
+                setCategories(await getCategories(token))
                 setLoading(false)
             }
         }
@@ -45,11 +54,25 @@ export default function TodoEditor() {
     }
 
     async function toggle(todo) {
-        const token = await getToken()
+        const token = await getToken({template: 'codehooks'})
         try {
             await toggleTodoStatus(token, todo)
         } catch(e) { console.log(e) }
         setTodos(await getUndoneTodos(token))
+    }
+
+    async function addCat() {
+        const token = await getToken({ template: 'codehooks' })
+        const newCategory = await addCategory(token, newCategoryName)
+        setCategories(await getCategories(token))
+    }
+
+    async function delCat(category) {
+        const token = await getToken({ template: 'codehooks'})
+        try {
+            await deleteCategory(token, category)
+        } catch(e) { console.log(e) }
+        setCategories(await getCategories(token))
     }
 
     if (loading) { return <span>Loading Todos...</span> }
@@ -77,7 +100,13 @@ export default function TodoEditor() {
                 </footer>
             </div>
         ))
-        console.log(todoListItems)
+        // console.log(todoListItems)
+        let categoryItems = categories.map((category) => (
+            <div className="notification is-small is-success is-light">
+                <button className="delete is-small" onClick={() => delCat(category)}></button>
+                <Link href={"/todos/"+category.name}>{category.name}</Link>
+            </div>
+        ))
         return (
             <>
                 <div className="todo-items-container">
@@ -89,10 +118,21 @@ export default function TodoEditor() {
                         onKeyDown={(e) => {if (e.key == 'Enter') add()}}
                         className="input is-primary"
                         ></input>
-                        <button onClick={add} className="button is-primary">
+                        <input
+                        placeholder="Add a new category"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        className="input is-secondary"></input>
+                        <button 
+                        onClick={function() {
+                            add()
+                            addCat()
+                        }} 
+                        className="button is-primary">
                             Add to the List
                         </button>
                     </div>
+                    {categoryItems}
                     {todoListItems}
                 </div>
             </>
