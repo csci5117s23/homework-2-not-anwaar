@@ -16,7 +16,7 @@ https://brilliant-rabanadas-b5094e.netlify.app
 ## Challenge Task
 
 * I started the challenge task: yes
-* I completed the challenge task: yes
+* I completed the challenge task: yes, new categories will display in green notification boxes above the todo items and can be deleted using the "x" in the upper right hand corner. These are linked to the pages that filter by category.
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 ## Getting Started
