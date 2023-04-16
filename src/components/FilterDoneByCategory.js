@@ -65,7 +65,7 @@ export default function FilterDoneByCategory({ category }) {
                     </button>
                     <button
                      className="card-footer-item button is-warning is-light is-small is-responsive"
-                     onClick={() => toggle(todo)}>Mark as Done</button>
+                     onClick={() => toggle(todo)}>Mark as Not Done</button>
                     <Link /** fake button, for the aesthetic */
                      className="card-footer-item button is-info is-light is-small is-responsive" 
                      href={"/todo/"+todo._id}>More Info</Link>
