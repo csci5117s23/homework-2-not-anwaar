@@ -176,3 +176,14 @@ export async function deleteCategory(authToken, category) {
     })
     return await result.json();
 }
+
+export async function updateTodoCategory(authToken, todo, newCategory) {
+    todo.category = newCategory
+    const result = await fetch(backend_base+"/todo/"+todo._id, {
+        'method': 'PUT',
+        'headers': {'Authorization': 'Bearer ' + authToken,
+        'Content-Type': 'application/json'},
+        'body': JSON.stringify(todo)
+    })
+    return await result.json()
+}

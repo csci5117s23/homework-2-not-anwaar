@@ -12,7 +12,9 @@ import {
     updateTodoContent, 
     getTodo, 
     getDoneTodos, 
-    getUndoneTodos
+    getUndoneTodos,
+    updateTodoCategory,
+    addCategory
 } from "@/modules/db"
 
 export default function SingleTodo({ id }) {
@@ -20,6 +22,7 @@ export default function SingleTodo({ id }) {
     const [loading, setLoading] = useState(true)
     const [todo, setTodo] = useState(null)
     const [updatedContent, setUpdatedContent] = useState("")
+    const [updatedCategory, setUpdatedCategory] = useState("")
 
 
     useEffect(() => {
@@ -51,9 +54,17 @@ export default function SingleTodo({ id }) {
     }
 
     async function update(todo, newContent) {
-        const token = await getToken()
+        const token = await getToken({template: 'codehooks'})
         try {
             await updateTodoContent(token, todo, newContent)
+        } catch(e) { console.log(e) }
+    }
+
+    async function uCat(todo, newCategory) {
+        const token = await getToken({template: 'codehooks'})
+        try {
+            await updateTodoCategory(token, todo, newCategory)
+            const addedCategory = await addCategory(token, newCategory)
         } catch(e) { console.log(e) }
     }
 
@@ -75,7 +86,7 @@ export default function SingleTodo({ id }) {
                                         <textarea 
                                         className="input is-primary"
                                         onChange={(e) => setUpdatedContent(e.target.value)}>
-                                        {todo.content}
+                                            {todo.content}
                                         </textarea>
                                     </td>
                                 </tr>
@@ -92,7 +103,11 @@ export default function SingleTodo({ id }) {
                                 <tr>
                                     <th>Category</th>
                                     <td>
-                                        {todo.category}
+                                        <textarea
+                                        className="input is-secondary"
+                                        onChange={(e) => setUpdatedCategory(e.target.value)}>
+                                            {todo.category}
+                                        </textarea>
                                     </td>
                                 </tr>
                             </table>
@@ -113,6 +128,12 @@ export default function SingleTodo({ id }) {
                         href="/todos"
                         className="card-footer-item button is-link is-light is-small is-responsive"
                         onClick={() => update(todo, updatedContent)}>Update Todo Content</Link>
+                        <Link
+                        href="/todos"
+                        className="card-footer-item button is-info is-light is-small is-responsive"
+                        onClick={() => uCat(todo, updatedCategory)}>
+                            Update Todo Category
+                        </Link>
                     </footer>
                 </div>
             </>
