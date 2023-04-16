@@ -89,6 +89,12 @@ export default function SingleTodo({ id }) {
                                         {todo.createdOn.split("T")[0] + " at " + todo.createdOn.split("T")[1].split(".")[0]}
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th>Category</th>
+                                    <td>
+                                        {todo.category}
+                                    </td>
+                                </tr>
                             </table>
                         </div>
                     </div>

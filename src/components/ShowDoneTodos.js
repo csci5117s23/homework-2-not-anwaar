@@ -6,7 +6,8 @@ import {
     updateTodoContent, 
     getTodo, 
     getDoneTodos, 
-    getUndoneTodos
+    getUndoneTodos,
+    getCategories
 } from "@/modules/db"
 import { useAuth } from "@clerk/nextjs";
 import React, { useState, useEffect } from "react";
@@ -18,12 +19,15 @@ export default function ShowDoneTodos() {
     const [loading, setLoading]= useState(true)
     const [todos, setTodos] = useState([])
     const { isLoaded, userId, sessionId, getToken } = useAuth()
+    const [categories, setCategories] = useState([])
+
 
     useEffect(() => {
         async function process() {
             if (userId) {
                 const token = await getToken({ template: 'codehooks' })
                 setTodos(await getDoneTodos(token))
+                setCategories(await getCategories(token))
                 setLoading(false)
             }
         }
@@ -44,6 +48,14 @@ export default function ShowDoneTodos() {
             await toggleTodoStatus(token, todo)
         } catch(e) { console.log(e) }
         setTodos(await getDoneTodos(token))
+    }
+
+    async function delCat(category) {
+        const token = await getToken({ template: 'codehooks'})
+        try {
+            await deleteCategory(token, category)
+        } catch(e) { console.log(e) }
+        setCategories(await getCategories(token))
     }
 
     if (loading) { return <span>Loading Todos...</span> }
@@ -70,8 +82,16 @@ export default function ShowDoneTodos() {
                 </footer>
             </div>
         ))
+        const uniqueCategories = [...new Map(categories.map((category) => [category.name, category])).values()] //remove duplicate items from categories array
+        let categoryItems = uniqueCategories.map((category) => (
+            <div className="notification is-small is-success is-light">
+                <button className="delete is-small" onClick={() => delCat(category)}></button>
+                <Link href={"/done/"+category.name}>{category.name}</Link>
+            </div>
+        ))
         return (
             <div className="todo-items-container">
+                {categoryItems}
                 {todoListItems}
             </div>
         )

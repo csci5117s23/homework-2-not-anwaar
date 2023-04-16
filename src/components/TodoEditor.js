@@ -41,7 +41,7 @@ export default function TodoEditor() {
 
     async function add() {
         const token = await getToken({ template: 'codehooks' })
-        const newTodo = await addTodo(token, newContent)
+        const newTodo = await addTodo(token, newContent, newCategoryName)
         setTodos(await getUndoneTodos(token))
     }
 
@@ -100,8 +100,8 @@ export default function TodoEditor() {
                 </footer>
             </div>
         ))
-        // console.log(todoListItems)
-        let categoryItems = categories.map((category) => (
+        const uniqueCategories = [...new Map(categories.map((category) => [category.name, category])).values()] //remove duplicate items from categories array
+        let categoryItems = uniqueCategories.map((category) => (
             <div className="notification is-small is-success is-light">
                 <button className="delete is-small" onClick={() => delCat(category)}></button>
                 <Link href={"/todos/"+category.name}>{category.name}</Link>
@@ -119,7 +119,7 @@ export default function TodoEditor() {
                         className="input is-primary"
                         ></input>
                         <input
-                        placeholder="Add a new category"
+                        placeholder="Add a category"
                         value={newCategoryName}
                         onChange={(e) => setNewCategoryName(e.target.value)}
                         className="input is-secondary"></input>
